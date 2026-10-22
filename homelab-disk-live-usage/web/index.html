@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Disk Live Usage</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#0d0d11; --card:rgba(255,255,255,.045); --card-hi:rgba(255,255,255,.07); --line:rgba(255,255,255,.08);
+  --text:#f2f2f5; --muted:#8c8c99; --read:#4f9dff; --write:#ff8a4c;
+  --ok:#3ccf91; --warn:#ffc04d; --bad:#ff5c5c; --track:rgba(255,255,255,.08);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#f3f3f6; --card:#fff; --card-hi:#fafafc; --line:rgba(0,0,0,.08);
+    --text:#16161a; --muted:#6b6b78; --read:#1f6fe0; --write:#e0661f; --track:rgba(0,0,0,.07);
+    color-scheme:light;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:1180px;margin:0 auto;padding:24px 16px 40px}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+h1{font-size:22px;font-weight:650;margin:0;letter-spacing:-.01em}
+h2{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:28px 0 10px}
+.status{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:13px;margin-left:auto}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dot.live{background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 25%,transparent)}
+.dot.down{background:var(--bad)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile,.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.tile{padding:12px 14px}
+.tile .k{font-size:12px;color:var(--muted)}
+.tile .v{font-size:20px;font-weight:620;font-variant-numeric:tabular-nums;margin-top:2px;white-space:nowrap}
+.tile .s{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.disks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.disk{padding:14px}
+.disk .top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.disk .name{font-weight:620;font-size:15px}
+.disk .util{font-size:22px;font-weight:650;font-variant-numeric:tabular-nums}
+.bar{height:6px;border-radius:3px;background:var(--track);overflow:hidden;margin:8px 0 10px}
+.bar>div{height:100%;border-radius:3px;transition:width .4s ease}
+.rw{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-variant-numeric:tabular-nums}
+.rw .lab{font-size:12px;color:var(--muted)}
+.rw b{font-weight:600}
+canvas{display:block;width:100%;height:64px;margin-top:10px}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:16px}
+@media (max-width:860px){.cols{grid-template-columns:minmax(0,1fr)}}
+.list{padding:4px 0}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 84px 84px;gap:10px;align-items:center;padding:9px 14px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row.head{font-size:12px;color:var(--muted);padding-top:8px;padding-bottom:6px}
+.row.idle{opacity:.42}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.r{color:var(--read)} .w{color:var(--write)}
+.nm{font-weight:580;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sub{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{display:inline-block;font-size:11px;font-weight:550;padding:1px 6px;border-radius:6px;background:var(--card-hi);border:1px solid var(--line);color:var(--muted);margin-left:6px;vertical-align:1px}
+.mini{height:4px;border-radius:2px;background:var(--track);margin-top:6px;display:flex;overflow:hidden}
+.mini .r{background:var(--read)} .mini .w{background:var(--write)}
+.empty{padding:16px 14px;color:var(--muted)}
+.notes{margin-top:22px;font-size:12px;color:var(--muted)}
+.notes div{padding:8px 12px;border:1px solid color-mix(in srgb,var(--warn) 40%,transparent);background:color-mix(in srgb,var(--warn) 8%,transparent);border-radius:10px;margin-top:6px;color:var(--text)}
+footer{margin-top:22px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Disk Live Usage</h1>
+    <div class="legend"><span><i style="background:var(--read)"></i>read</span><span><i style="background:var(--write)"></i>write</span></div>
+    <div class="status"><span class="dot" id="dot"></span><span id="status">connecting…</span></div>
+  </header>
+
+  <section class="tiles" id="tiles"></section>
+
+  <h2>Disks</h2>
+  <section class="disks" id="disks"><div class="card empty">Waiting for data…</div></section>
+
+  <div class="cols">
+    <section>
+      <h2>Apps &amp; services</h2>
+      <div class="card list" id="groups"></div>
+    </section>
+    <section>
+      <h2>Top processes</h2>
+      <div class="card list" id="procs"></div>
+    </section>
+  </div>
+
+  <div class="notes" id="notes"></div>
+  <footer id="footer"></footer>
+</main>
+<script>
+const HIST = 120;               // samples kept per disk for sparklines
+const hist = {};                // disk name -> [{r,w}]
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function rate(b){
+  if (!b || b < 1) return '0';
+  if (b >= 1e9) return (b/1e9).toFixed(2)+' GB/s';
+  if (b >= 1e6) return (b/1e6).toFixed(b >= 1e8 ? 0 : 1)+' MB/s';
+  if (b >= 1e3) return (b/1e3).toFixed(0)+' KB/s';
+  return b.toFixed(0)+' B/s';
+}
+function size(b){
+  if (b >= 1e9) return (b/1e9).toFixed(2)+' GB';
+  if (b >= 1e6) return (b/1e6).toFixed(0)+' MB';
+  return (b/1e3).toFixed(0)+' KB';
+}
+const iops = v => v >= 100 ? v.toFixed(0) : v.toFixed(1);
+const level = p => p >= 85 ? 'var(--bad)' : p >= 50 ? 'var(--warn)' : 'var(--ok)';
+
+function tile(k, v, s, color){
+  return `<div class="tile"><div class="k">${k}</div><div class="v"${color?` style="color:${color}"`:''}>${v}</div>${s?`<div class="s">${s}</div>`:''}</div>`;
+}
+
+function render(s){
+  const rd = s.disks.reduce((a,d)=>a+d.read,0), wr = s.disks.reduce((a,d)=>a+d.write,0);
+  const busiest = s.disks.reduce((a,d)=>d.util>a.util?d:a,{util:0,name:'–'});
+  $('tiles').innerHTML =
+    tile('Disk read', `<span class="r">${rate(rd)}</span>`, 'all disks') +
+    tile('Disk write', `<span class="w">${rate(wr)}</span>`, 'all disks') +
+    tile('Busiest disk', busiest.util.toFixed(0)+'%', busiest.name+' utilisation', level(busiest.util)) +
+    tile('CPU I/O wait', s.iowait.toFixed(1)+'%', 'time CPUs waited on disk', level(s.iowait*2)) +
+    tile('Swap in / out', `${rate(s.swapIn)} / ${rate(s.swapOut)}`, s.swapTotal ? `${size(s.swapUsed)} of ${size(s.swapTotal)} used` : 'no swap') +
+    tile('Memory available', size(s.memAvail), s.memTotal ? `of ${size(s.memTotal)}` : '');
+
+  renderDisks(s.disks);
+  renderGroups(s.groups || []);
+  renderProcs(s.procs || []);
+
+  $('notes').innerHTML = (s.notes||[]).map(n=>`<div>${esc(n)}</div>`).join('');
+  $('footer').textContent = `Rates over ${s.dt.toFixed(2)} s · ${s.procsSeen} processes scanned · MB = 10⁶ bytes · ${new Date(s.t).toLocaleTimeString()}`;
+}
+
+function renderDisks(disks){
+  const box = $('disks');
+  if (!disks.length){ box.innerHTML = '<div class="card empty">No block devices found in /proc/diskstats.</div>'; return; }
+  const names = disks.map(d=>d.name);
+  if (box.dataset.names !== names.join()){
+    box.dataset.names = names.join();
+    box.innerHTML = disks.map(d => `
+      <div class="card disk" data-disk="${esc(d.name)}">
+        <div class="top"><span class="name">${esc(d.name)}</span><span class="util"></span></div>
+        <div class="bar"><div></div></div>
+        <div class="rw">
+          <div><div class="lab">Read</div><b class="r rd"></b> <span class="sub ri"></span></div>
+          <div><div class="lab">Write</div><b class="w wr"></b> <span class="sub wi"></span></div>
+        </div>
+        <canvas></canvas>
+      </div>`).join('');
+  }
+  for (const d of disks){
+    const el = box.querySelector(`[data-disk="${CSS.escape(d.name)}"]`);
+    const h = hist[d.name] || (hist[d.name] = []);
+    h.push({r:d.read, w:d.write}); if (h.length > HIST) h.shift();
+    el.querySelector('.util').textContent = d.util.toFixed(0)+'%';
+    el.querySelector('.util').style.color = level(d.util);
+    const bar = el.querySelector('.bar>div'); bar.style.width = d.util+'%'; bar.style.background = level(d.util);
+    el.querySelector('.rd').textContent = rate(d.read);
+    el.querySelector('.wr').textContent = rate(d.write);
+    el.querySelector('.ri').textContent = iops(d.riops)+' IOPS';
+    el.querySelector('.wi').textContent = iops(d.wiops)+' IOPS';
+    spark(el.querySelector('canvas'), h);
+  }
+}
+
+function spark(cv, h){
+  const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+  if (cv.width !== W*dpr || cv.height !== H*dpr){ cv.width = W*dpr; cv.height = H*dpr; }
+  const g = cv.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,W,H);
+  const max = Math.max(1e6, ...h.map(p=>Math.max(p.r,p.w)));
+  const cs = getComputedStyle(document.documentElement);
+  const x = i => W - (h.length-1-i) * (W/(HIST-1)), y = v => H - 2 - (v/max)*(H-6);
+  for (const [key, col] of [['r', cs.getPropertyValue('--read')], ['w', cs.getPropertyValue('--write')]]){
+    g.beginPath();
+    h.forEach((p,i)=> i ? g.lineTo(x(i), y(p[key])) : g.moveTo(x(i), y(p[key])));
+    g.strokeStyle = col; g.lineWidth = 1.5; g.lineJoin = 'round'; g.stroke();
+    g.lineTo(x(h.length-1), H); g.lineTo(x(0), H); g.closePath();
+    g.globalAlpha = .12; g.fillStyle = col; g.fill(); g.globalAlpha = 1;
+  }
+  g.fillStyle = cs.getPropertyValue('--muted'); g.font = '10px sans-serif'; g.textAlign = 'left';
+  g.fillText('max '+rate(max), 2, 10);
+}
+
+function mini(r, w, max){
+  return `<div class="mini"><div class="r" style="width:${100*r/max}%"></div><div class="w" style="width:${100*w/max}%"></div></div>`;
+}
+
+function renderGroups(gs){
+  if (!gs.length){ $('groups').innerHTML = '<div class="empty">No containers found (Docker API not reachable?).</div>'; return; }
+  const max = Math.max(1e6, ...gs.map(g=>g.read+g.write));
+  $('groups').innerHTML = '<div class="row head"><span>App</span><span class="num">Read</span><span class="num">Write</span></div>' +
+    gs.map(g => {
+      const idle = g.read + g.write < 1;
+      const sub = g.kind === 'service' ? 'host systemd service' : (g.containers||[]).join(', ');
+      return `<div class="row${idle?' idle':''}">
+        <div><div class="nm">${esc(g.id)}${g.kind==='service'?'<span class="badge">host</span>':''}</div>
+          <div class="sub">${esc(sub)}</div>${idle?'':mini(g.read,g.write,max)}</div>
+        <span class="num r">${rate(g.read)}</span><span class="num w">${rate(g.write)}</span></div>`;
+    }).join('');
+}
+
+function renderProcs(ps){
+  if (!ps.length){ $('procs').innerHTML = '<div class="empty">No process is reading or writing right now.</div>'; return; }
+  const max = Math.max(1e6, ...ps.map(p=>p.read+p.write));
+  $('procs').innerHTML = '<div class="row head"><span>Process</span><span class="num">Read</span><span class="num">Write</span></div>' +
+    ps.map(p => `<div class="row">
+        <div><div class="nm">${esc(p.name)} <span class="sub">${p.pid}</span>${p.group?`<span class="badge">${esc(p.group)}</span>`:''}</div>
+          <div class="sub" title="${esc(p.cmd)}">${esc(p.cmd)}</div>${mini(p.read,p.write,max)}</div>
+        <span class="num r">${rate(p.read)}</span><span class="num w">${rate(p.write)}</span></div>`).join('');
+}
+
+function connect(){
+  const es = new EventSource('api/stream');
+  es.onopen = () => { $('dot').className = 'dot live'; $('status').textContent = 'live'; };
+  es.onmessage = e => { $('dot').className = 'dot live'; $('status').textContent = 'live'; render(JSON.parse(e.data)); };
+  es.onerror = () => { $('dot').className = 'dot down'; $('status').textContent = 'reconnecting…'; };
+}
+connect();
+</script>
+</body>
+</html>

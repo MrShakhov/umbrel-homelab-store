@@ -1,0 +1,41 @@
+manifestVersion: 1
+id: homelab-disk-live-usage
+name: Disk Live Usage
+tagline: Live disk I/O per disk, per app and per process
+icon: https://raw.githubusercontent.com/MrShakhov/umbrel-disk-live-usage-store/main/homelab-disk-live-usage/web/icon.svg
+category: developer
+version: "0.1.0"
+port: 7841
+description: >-
+  A Live Usage view for your disks. See in real time which disk is busy and
+  which app or host process is reading or writing to it.
+
+
+  - Per disk: read/write throughput, IOPS and utilisation (from /proc/diskstats)
+
+  - Per app: read/write throughput of each app's containers (cgroup v2 io.stat)
+
+  - Top host processes by disk I/O, including umbrelOS itself (umbreld), which is not a container
+
+  - CPU I/O wait, swap in/out and memory available
+
+
+  The poller only runs while the page is open and never writes to the host.
+
+
+  ⚠️ To see host processes this app runs with the host PID namespace, CAP_SYS_PTRACE and
+  read access to the Docker socket. Together that is root-equivalent on your Umbrel.
+  Install it only if you trust this code. See the README for details.
+developer: MrShakhov
+website: https://github.com/MrShakhov/umbrel-disk-live-usage-store
+submitter: MrShakhov
+submission: https://github.com/MrShakhov/umbrel-disk-live-usage-store
+repo: https://github.com/MrShakhov/umbrel-disk-live-usage-store
+support: https://github.com/MrShakhov/umbrel-disk-live-usage-store/issues
+gallery: []
+releaseNotes: >-
+  First prototype.
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""

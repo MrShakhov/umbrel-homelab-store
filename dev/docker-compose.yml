@@ -1,0 +1,21 @@
+# Local test without umbrelOS: no app_proxy, the UI is published on :8080.
+#   docker compose -f dev/docker-compose.yml up --build
+services:
+  web:
+    build: ../homelab-disk-live-usage
+    image: umbrel-disk-live-usage:dev
+    init: true
+    pid: host
+    user: "0:0"
+    read_only: true
+    cap_drop: [ALL]
+    cap_add: [SYS_PTRACE, DAC_READ_SEARCH]
+    security_opt:
+      - no-new-privileges:true
+      - apparmor:unconfined
+    mem_limit: 64m
+    volumes:
+      - /sys/fs/cgroup:/host/cgroup:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "8080:8080"

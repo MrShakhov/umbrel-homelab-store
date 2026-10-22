@@ -1,0 +1,2 @@
+id: "homelab" # Prefix for every app id in this store: letters a-z and dashes only.
+name: "Homelab" # Shown in umbrelOS as "Homelab App Store".

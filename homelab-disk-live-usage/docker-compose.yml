@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      # <app-id>_<docker-service-name>_1
+      APP_HOST: homelab-disk-live-usage_web_1
+      APP_PORT: 8080
+
+  web:
+    # Build and push with: docker buildx build --platform linux/arm64,linux/amd64 -t <image> --push .
+    image: ghcr.io/mrshakhov/umbrel-disk-live-usage:0.1.0
+    restart: on-failure
+    init: true
+    # Needed to see host processes (umbreld is not a container) - see README "Security".
+    pid: host
+    user: "0:0"
+    read_only: true
+    cap_drop:
+      - ALL
+    cap_add:
+      - SYS_PTRACE       # read /proc/<pid>/io of host processes (kernel ptrace-read check)
+      - DAC_READ_SEARCH  # open /proc/<pid>/io owned by other uids (mode 0400)
+    security_opt:
+      - no-new-privileges:true
+      - apparmor:unconfined  # docker-default AppArmor blocks ptrace-read of host processes
+    mem_limit: 64m
+    volumes:
+      - /sys/fs/cgroup:/host/cgroup:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      INTERVAL: "1s"
+      TOP_PROCS: "15"
