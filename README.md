@@ -138,7 +138,7 @@ in `docker-compose.yml` (the digest is in the GitHub Release), then commit and p
 ## Install in umbrelOS
 
 1. Open **App Store** → the **⋯** menu at the top right → **Community App Stores**.
-2. Paste the repository URL (`https://github.com/MrShakhov/umbrel-disk-live-usage-store`) → **Add**.
+2. Paste the repository URL (`https://github.com/MrShakhov/umbrel-homelab-store`) → **Add**.
 3. Open the new **Homelab App Store** → **Disk Live Usage** or **Kinoseed** → **Install**.
 4. Disk Live Usage opens at `http://umbrel.local:7841`, Kinoseed at `http://umbrel.local:8795`.
 

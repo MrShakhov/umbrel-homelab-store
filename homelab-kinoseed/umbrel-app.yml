@@ -2,7 +2,7 @@ manifestVersion: 1
 id: homelab-kinoseed
 name: Kinoseed
 tagline: Find movies and series, pick a release, download it with qBittorrent
-icon: https://raw.githubusercontent.com/MrShakhov/umbrel-disk-live-usage-store/main/homelab-kinoseed/icon.svg
+icon: https://raw.githubusercontent.com/MrShakhov/umbrel-homelab-store/main/homelab-kinoseed/icon.svg
 category: media
 version: "0.1.0"
 port: 8795
@@ -18,7 +18,7 @@ description: >-
 developer: MrShakhov
 website: https://github.com/MrShakhov/kinoseed
 submitter: MrShakhov
-submission: https://github.com/MrShakhov/umbrel-disk-live-usage-store
+submission: https://github.com/MrShakhov/umbrel-homelab-store
 repo: https://github.com/MrShakhov/kinoseed
 support: https://github.com/MrShakhov/kinoseed/issues
 gallery: []
