@@ -1,0 +1,32 @@
+manifestVersion: 1
+id: homelab-kinoseed
+name: Kinoseed
+tagline: Find movies and series, pick a release, download it with qBittorrent
+icon: data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMEMyQTJFIi8+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNi40IDguNCkgc2NhbGUoMC44KSI+PHBhdGggZD0iTTMyLjUgOS41QzM1IDQgNDEgMS41IDQ3LjUgMi41IDQ2LjUgOSA0MSAxMi41IDM0LjUgMTJ6IiBmaWxsPSIjOEFFOEVDIi8+PHBhdGggZD0iTTMyIDhDNDAuNSAxNi41IDUwIDI3IDUwIDM5YTE4IDE4IDAgMCAxLTM2IDBDMTQgMjcgMjMuNSAxNi41IDMyIDh6IiBmaWxsPSIjMkNDNUNDIi8+PHBhdGggZD0iTTI3LjUgMzEuNXYxNWwxMi41LTcuNXoiIGZpbGw9IiMwQzJBMkUiIHN0cm9rZT0iIzBDMkEyRSIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L2c+PC9zdmc+Cg==
+category: media
+version: "0.1.0"
+port: 8795
+description: >-
+  A qBittorrent web UI built around movies and TV series. Search TMDB, pick a
+  release found by Prowlarr and send it to qBittorrent, then follow the
+  download. Installable as an app on your phone.
+
+
+  Works with the qBittorrent and Prowlarr apps from the Umbrel App Store
+  without setup. On first launch Kinoseed asks for a free TMDB API key, which
+  it keeps on your Umbrel.
+developer: MrShakhov
+website: https://github.com/MrShakhov/kinoseed
+submitter: MrShakhov
+submission: https://github.com/MrShakhov/umbrel-disk-live-usage-store
+repo: https://github.com/MrShakhov/kinoseed
+support: https://github.com/MrShakhov/kinoseed/issues
+gallery: []
+releaseNotes: >-
+  First release.
+dependencies:
+  - qbittorrent
+  - prowlarr
+path: ""
+defaultUsername: ""
+defaultPassword: ""
