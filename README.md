@@ -70,12 +70,24 @@ git tag v0.1.1 && git push origin v0.1.1   # → ghcr.io/mrshakhov/umbrel-disk-l
 Можно переименовать стор: поменяйте `id` в `umbrel-app-store.yml`, имя папки приложения, `id` в манифесте и `APP_HOST`
 в compose — все четыре должны совпадать по префиксу.
 
+## Kinoseed
+
+Второе приложение стора: [Kinoseed](https://github.com/MrShakhov/kinoseed), веб-интерфейс qBittorrent вокруг фильмов
+и сериалов (поиск в TMDB, релизы через Prowlarr, загрузка в qBittorrent). Папка `homelab-kinoseed/`, порт 8795 на Umbrel.
+
+- Зависит от приложений **qBittorrent** и **Prowlarr** из официального магазина Umbrel. Логин qBittorrent по умолчанию
+  (`admin`/`adminadmin`) задан в compose; если его поменяли, Kinoseed один раз спросит логин и сохранит его у себя.
+  Ключ Prowlarr читается из его `config.xml` (папка конфига Prowlarr смонтирована только на чтение).
+- При первом запуске Kinoseed просит бесплатный ключ TMDB и хранит его в `${APP_DATA_DIR}/data`.
+- Образ `ghcr.io/mrshakhov/kinoseed` собирается в репозитории Kinoseed по тегу `v*`. Новый выпуск: поменяйте `version`
+  и `releaseNotes` в `umbrel-app.yml`, тег и digest образа в `docker-compose.yml` (digest есть в GitHub Release).
+
 ## Установка в umbrelOS
 
 1. Откройте **App Store** → меню **⋯** справа вверху → **Community App Stores**.
 2. Вставьте URL репозитория (`https://github.com/MrShakhov/umbrel-disk-live-usage-store`) → **Add**.
-3. Откройте появившийся **Homelab App Store** → **Disk Live Usage** → **Install**.
-4. Приложение откроется на `http://umbrel.local:7841`.
+3. Откройте появившийся **Homelab App Store** → **Disk Live Usage** или **Kinoseed** → **Install**.
+4. Disk Live Usage откроется на `http://umbrel.local:7841`, Kinoseed на `http://umbrel.local:8795`.
 
 После нового выпуска (см. выше) Umbrel сам предложит обновление.
 
