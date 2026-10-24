@@ -16,11 +16,11 @@ description: >-
   without setup. On first launch Kinoseed asks for a free TMDB API key, which
   it keeps on your Umbrel.
 developer: MrShakhov
-website: https://github.com/MrShakhov/kinoseed
+website: https://github.com/MrShakhov/umbrel-homelab-store#kinoseed
 submitter: MrShakhov
 submission: https://github.com/MrShakhov/umbrel-homelab-store
-repo: https://github.com/MrShakhov/kinoseed
-support: https://github.com/MrShakhov/kinoseed/issues
+repo: ""
+support: https://github.com/MrShakhov/umbrel-homelab-store/issues
 gallery: []
 releaseNotes: >-
   First release.
