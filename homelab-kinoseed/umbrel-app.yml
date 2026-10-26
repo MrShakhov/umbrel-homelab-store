@@ -4,7 +4,7 @@ name: Kinoseed
 tagline: Find movies and series, pick a release, download it with qBittorrent
 icon: https://raw.githubusercontent.com/MrShakhov/umbrel-homelab-store/main/homelab-kinoseed/icon.svg
 category: media
-version: "0.4.1"
+version: "0.4.2"
 port: 8795
 description: >-
   A qBittorrent web UI built around movies and TV series. Search TMDB, pick a
@@ -24,9 +24,10 @@ repo: ""
 support: https://github.com/MrShakhov/umbrel-homelab-store/issues
 gallery: []
 releaseNotes: >-
-  Fixes adding releases over plain HTTP, Kinoseed's usual address on a home
-  network: the .torrent file is read again, so picking the files to download
-  works there too.
+  Polish: spacing, corner radii and text sizes follow the design system across
+  the app, the theme follows the system on every screen as soon as it changes,
+  and download cards on a phone show their speed and time left on a row of
+  their own.
 dependencies:
   - qbittorrent
   - prowlarr
