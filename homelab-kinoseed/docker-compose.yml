@@ -8,7 +8,7 @@ services:
       APP_PORT: 8080
 
   web:
-    image: ghcr.io/mrshakhov/kinoseed:0.4.2@sha256:986e2cf540b9cf4b4539046300513fbccbde406c1515a46e778b414af5f019cb
+    image: ghcr.io/mrshakhov/kinoseed:0.6.0@sha256:c9fb37a72482b5006538bf80551fc6ab1dae57f0d509f9df10ecebd2f2aa564b
     restart: on-failure
     user: "1000:1000"
     environment:
