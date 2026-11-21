@@ -4,7 +4,7 @@ name: Kinopeer
 tagline: Find movies and series, pick a release, download it with qBittorrent
 icon: https://raw.githubusercontent.com/MrShakhov/umbrel-homelab-store/main/homelab-kinopeer/icon.svg
 category: media
-version: "1.1.0"
+version: "1.2.0"
 port: 8797
 description: >-
   Kinopeer is a qBittorrent web UI built around movies and TV series. Find a
@@ -44,13 +44,10 @@ repo: https://github.com/kinopeer/kinopeer
 support: https://github.com/kinopeer/kinopeer/issues
 gallery: []
 releaseNotes: >-
-  Kinopeer can tell you when a download finishes, in Telegram through a bot
-  of your own or with a push notification on your phone or computer (push
-  needs Umbrel's HTTPS with its certificate trusted on the device, and on an
-  iPhone, Kinopeer added to the Home Screen). Settings changes where
-  qBittorrent saves downloads. Search, a title's releases and the add sheet
-  mark what you already have in downloads, and screens no longer move as
-  their data comes in.
+  When Kinopeer can't reach qBittorrent or Prowlarr, it says why and what to
+  check, in Settings and on a title's releases. A title's releases open the
+  form for Prowlarr's API key when Prowlarr rejects the one Kinopeer has, and
+  then search again.
 dependencies:
   - qbittorrent
   - prowlarr
