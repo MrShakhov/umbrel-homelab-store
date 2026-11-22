@@ -45,9 +45,9 @@ support: https://github.com/kinopeer/kinopeer/issues
 gallery: []
 releaseNotes: >-
   When Kinopeer can't reach qBittorrent or Prowlarr, it says why and what to
-  check, in Settings and on a title's releases. A title's releases open the
-  form for Prowlarr's API key when Prowlarr rejects the one Kinopeer has, and
-  then search again.
+  check, on the connect screen, in Settings and on a title's releases. A
+  title's releases open the form for Prowlarr's API key when Prowlarr rejects
+  the one Kinopeer has, and then search again.
 dependencies:
   - qbittorrent
   - prowlarr
