@@ -4,7 +4,7 @@ name: Kinopeer
 tagline: Find movies and series, pick a release, download it with qBittorrent
 icon: https://raw.githubusercontent.com/MrShakhov/umbrel-homelab-store/main/homelab-kinopeer/icon.svg
 category: media
-version: "1.2.0"
+version: "1.3.0"
 port: 8797
 description: >-
   Kinopeer is a qBittorrent web UI built around movies and TV series. Find a
@@ -44,10 +44,12 @@ repo: https://github.com/kinopeer/kinopeer
 support: https://github.com/kinopeer/kinopeer/issues
 gallery: []
 releaseNotes: >-
-  When Kinopeer can't reach qBittorrent or Prowlarr, it says why and what to
-  check, on the connect screen, in Settings and on a title's releases. A
-  title's releases open the form for Prowlarr's API key when Prowlarr rejects
-  the one Kinopeer has, and then search again.
+  Kinopeer can name a movie's or a series' files for a media server such as
+  Jellyfin, from the torrent's menu or when adding, with the TMDB id in folder
+  names as an option. When a download doesn't fit, the add sheet lists torrents
+  to delete to free up space. A title's releases can be searched by an edited
+  query and, for titles in other scripts, by their English name too, and each
+  filter shows how many releases it would leave.
 dependencies:
   - qbittorrent
   - prowlarr
